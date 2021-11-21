@@ -6,8 +6,8 @@
 #
 # Josep Maria Domingo Catafal NIU: 1599946
 
-from src.apartat_b import apartat_b
-from src.apartat_a import apartat_a
+from apartat_b import apartat_b
+from apartat_a import apartat_a
 
 apartat_b()
 apartat_a()

@@ -20,7 +20,6 @@ def apartat_b():
     scaler.fit(X)
     X = scaler.transform(X)
 
-
     models = [
         LogisticRegression(C=2.0, fit_intercept=True, penalty='l2', tol=0.001),
         svm.SVC(C=1.0, kernel='rbf', probability=True, random_state=0),
@@ -29,7 +28,6 @@ def apartat_b():
     ]
 
     model_names = ['LogisticRegression', 'SVC', 'KNN', 'RandomForestClassifier']
-
 
     partitions = [0.5, 0.7, 0.8]
     for partition in partitions:
@@ -58,16 +56,14 @@ def apartat_b():
         average_precision = {}
 
         for i in range(n_classes):
-            precision[i], recall[i], _ = precision_recall_curve(
-                y_test == i, probs[:, i])
-            average_precision[i] = average_precision_score(
-                y_test == i, probs[:, i])
+            precision[i], recall[i], _ = precision_recall_curve(y_test == i, probs[:, i])
+            average_precision[i] = average_precision_score(y_test == i, probs[:, i])
 
             plt.plot(recall[i], precision[i],
                      label=f'Precision-recall curve of class {i} (area = {average_precision[i]})')
 
         plt.legend()
-        plt.savefig("images/pr-curves/" + model_name)
+        plt.savefig("images/B/pr-curves/" + model_name)
 
         fpr = {}
         tpr = {}
@@ -85,7 +81,7 @@ def apartat_b():
         for i in range(n_classes):
             plt.plot(fpr[i], tpr[i], label=f'ROC curve of class {i} (area = {roc_auc[i]})')
         plt.legend()
-        plt.savefig("images/roc-curves/" + model_name)
+        plt.savefig("images/B/roc-curves/" + model_name)
 
     show_C_effect(X[:, :2], y, C=0.1)
     show_C_effect(X[:, :2], y, C=0.5)
@@ -144,4 +140,4 @@ def show_C_effect(X, y, C=1.0, gamma=0.7, degree=3):
         ax.set_yticks(())
         ax.set_title(title)
 
-    plt.savefig("images/C-effect/" + str(C) + ".png")
+    plt.savefig("images/B/C-effect/" + str(C) + ".png")
