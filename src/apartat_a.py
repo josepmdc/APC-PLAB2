@@ -2,13 +2,15 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn import svm
+from sklearn.pipeline import make_pipeline
 from sklearn.linear_model import Perceptron
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import cross_val_score, LeaveOneOut
+from sklearn.model_selection import cross_val_score, train_test_split, LeaveOneOut
 
 #############
 # Apartat A #
@@ -47,26 +49,34 @@ def apartat_a():
     scaler = StandardScaler()
 
     models = [
-        LogisticRegression(random_state=0),
-        svm.SVC(kernel='rbf', probability=True, random_state=0),
-        svm.SVC(kernel='linear', probability=True, random_state=0),
+        LogisticRegression(max_iter=3000),
+        svm.SVC(kernel='rbf'),
+        svm.SVC(kernel='linear'),
         KNeighborsClassifier(),
-        RandomForestClassifier(),
+        RandomForestClassifier(min_samples_split=20),
         Perceptron(),
         DecisionTreeClassifier()
     ]
 
-    model_names = ['LogisticRegression', 'SVC', 'KNN', 'RandomForestClassifier', 'Perceptron', 'DecisionTreeClassifier']
+    model_names = ['LogisticRegression', 'SVC rbf', 'SVC linear', 'KNN', 'RandomForestClassifier', 'Perceptron', 'DecisionTreeClassifier']
 
     for model_name, model in zip(model_names, models):
-        model.fit(X, y)
-        print(f"{model_name} score: {model.score(X, y)}")
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+        pipe = make_pipeline(scaler, model)
+        pipe.fit(X_train, y_train)
+
+        print(model_name + "\n")
+
+        y_test_pred = pipe.predict(X_test)
+        print(classification_report(y_test, y_test_pred))
 
         # K-fold cross validation
-        for k in range(2, 10):
-            scores = cross_val_score(model, X, y, cv=k)
-            print(f"K-fold Score for k = {k}: {scores.mean()}")
-
-        
-
-
+        # for k in range(2, 10):
+        #     scores = cross_val_score(model, X, y, cv=k)
+        #     print(f"K-fold Score for k = {k}: {scores.mean():.2f}")
+        # print()
+        # # Leave-one-out cross validation
+        # loo = LeaveOneOut()
+        # scores = cross_val_score(model, X, y, cv=loo)
+        # print(f"Leave-one-out Score: {scores.mean()}")
