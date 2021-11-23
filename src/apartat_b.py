@@ -36,7 +36,7 @@ def apartat_b():
 
         for model_name, model in zip(model_names, models):
             model.fit(X_train, y_train)
-            print(f'{model_name} Score with part {partition}: {model.score(X_test, y_test)}\n')
+            print(f'{model_name} Score with part {partition}: {model.score(X_test, y_test):.2f}\n')
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, random_state=0)
 
@@ -51,35 +51,27 @@ def apartat_b():
         plt.xlabel('Recall')
         plt.ylabel('Precision')
 
-        precision = {}
-        recall = {}
-        average_precision = {}
-
         for i in range(n_classes):
-            precision[i], recall[i], _ = precision_recall_curve(y_test == i, probs[:, i])
-            average_precision[i] = average_precision_score(y_test == i, probs[:, i])
+            precision, recall, _ = precision_recall_curve(y_test == i, probs[:, i])
+            average_precision = average_precision_score(y_test == i, probs[:, i])
 
-            plt.plot(recall[i], precision[i],
-                     label=f'Precision-recall curve of class {i} (area = {average_precision[i]})')
+            plt.plot(recall, precision,
+                    label=f'Precision-recall curve of class {i} (area = {average_precision})')
 
         plt.legend()
         plt.savefig("images/B/pr-curves/" + model_name)
-
-        fpr = {}
-        tpr = {}
-        roc_auc = {}
-        # Compute ROC curve and ROC area for each class
-        for i in range(n_classes):
-            fpr[i], tpr[i], _ = roc_curve(y_test == i, probs[:, i])
-            roc_auc[i] = auc(fpr[i], tpr[i])
 
         plt.figure()
         plt.title(f'ROC curve for {model_name}')
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
-        # Compute and plot micro-average ROC curve and ROC area
+        
+        # Compute ROC curve and ROC area for each class
         for i in range(n_classes):
-            plt.plot(fpr[i], tpr[i], label=f'ROC curve of class {i} (area = {roc_auc[i]})')
+            fpr, tpr, _ = roc_curve(y_test == i, probs[:, i])
+            roc_auc = auc(fpr, tpr)
+            plt.plot(fpr, tpr, label=f'ROC curve of class {i} (area = {roc_auc})')
+
         plt.legend()
         plt.savefig("images/B/roc-curves/" + model_name)
 

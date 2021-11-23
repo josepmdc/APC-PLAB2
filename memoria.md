@@ -8,6 +8,47 @@ numbersections: true
 ---
 
 # Apartat B
+
+En aquest primer apartat farem servir el dataset de cancer de pit de la llibreria sklearn.
+Probarem diferents models amb particions de test de tamanys diferents. L'objectiu és veure
+quin funciona millor per el dataset seleccionat.
+
+## Introducció al dataset
+L'objectiu d'aquest dataset és detectar si un tumor es benigne o no. Per fer-ho tenim una
+serie de features com ara la textura, el radi, etc. En total hi ha 30 features.
+
+## Comparativa de models
+Per fer la comparativa hem escollit 4 models: Regressió Logistica, SVC amb el kernel rbf
+KNN i Random Forest. A l'hora d'entrenar els models ho hem fet variant el percentatge de 
+train i test. En la primera iteracó ho fem amb un 0.5 de test i 0.5 de train, la segona 
+iteració amb un 0.3 de test i un 0.7 de train  i finalment la última amb un 0.2 de test i 
+un 0.8 de train. A continuació mostrem els resultats obtinguts:En aquest primer apartat farem servir el dataset de càncer de pit de la llibreria sklearn.
+Provarem diferents models amb particions de test de tamanys diferents. L'objectiu és veure
+quin funciona millor pel dataset seleccionat.
+
+## Introducció al dataset
+L'objectiu d'aquest dataset és detectar si un tumor es benigne o no. Per fer-ho tenim una
+sèrie de features com ara la textura, el radi, etc. En total hi ha 30 features.
+
+## Comparativa de models
+Per fer la comparativa hem escollit 4 models: Regressió Logistica, SVC amb el kernel rbf
+KNN i Random Forest. A l'hora d'entrenar els models ho hem fet variant el percentatge de
+train i test. En la primera iteracó ho fem amb un 0.5 de test i 0.5 de train, la segona
+iteració amb un 0.3 de test i un 0.7 de train i finalment l'última amb un 0.2 de test i
+un 0.8 de train. A continuació mostrem els resultats obtinguts:
+
+            LogisticRegression      SVC     KNN     RandomForestClassifier
+    50%                   0.96     0.97    0.95                       0.95
+    70%                   0.95     0.98    0.96                       0.98
+    80%                   0.96     0.97    0.96                       0.96
+
+Com podem observar tots els models han funcionat bastant bé independentment de la mida de
+les particions. Entre ells podem destacar el SVC com el que millor ha funcionat, però tot i això, molt proper a la resta. Per tant sembla que per al dataset escollit tots els models
+provats ens servirien.
+
+A continuació donarem un cop d'ull a les corbes ROC i Precision-Recall. Per generar les
+corbes s'ha fet servir una partició del 80% de train i 20% de test.
+
 ![](images/B/pr-curves/LogisticRegression.png){ width=300px }
 ![](images/B/roc-curves/LogisticRegression.png){ width=300px }
 
@@ -19,6 +60,33 @@ numbersections: true
 
 ![](images/B/pr-curves/RandomForestClassifier.png){ width=300px }
 ![](images/B/roc-curves/RandomForestClassifier.png){ width=300px }
+
+Com es pot veure a les gràfiques anteriors el SVC te una corba pràcticament perfecte, tant
+les corbes ROC com les PR, amb l'àrea molt propera a 1. El Random Forest és l'altre amb
+el que hem obtingut molts bons resultats, també amb una àrea molt propera a 1.
+Els altres dos models tot i que no han obtingut resultats tan perfectes s'hi apropen molt.
+
+Per útlim ens quedaria mirar com afecta el valor de C als diferents kernels del SVC. Hem 
+creat una visualització per veure-ho gràficament:
+
+![](images/B/C-effect/0.1.png){ width=600px }
+\begin{center}
+C = 0.1
+\end{center}
+
+![](images/B/C-effect/0.5.png){ width=600px }
+\begin{center}
+C = 0.5
+\end{center}
+
+![](images/B/C-effect/1.0.png){ width=600px }
+\begin{center}
+C = 1
+\end{center}
+
+El valor de C no afecta al kernel lineal pero si que canvia el resultat del kernel rbf
+que acota més la classificació del vermell respecte a la versió amb la C de 0.1. Tot i
+així en cap dels 3 casos obtenim masses classificacions errones.
 
 # Apartat A
 
@@ -44,7 +112,7 @@ L'altre atribut restant és el gest que està realitzant la persona. Els atribut
 - Podeu veure alguna correlació entre X i y?
 No veiem cap correlació directe entre els valors dels diferents sensors i el gest resultant.
 
-![](images/A/heatmap/correlationXy.png){ width=300px }
+![](images/A/heatmap/correlationXy.png){ width=500px }
 
 - Estan balancejades les etiquetes (distribució similar entre categories)? Creus que pot afectar a la classificació la seva distribució?
 Sí, hi ha pràcticament la mateixa quantitat de cada etiqueta:
@@ -53,14 +121,12 @@ Sí, hi ha pràcticament la mateixa quantitat de cada etiqueta:
 
 Per tant no creiem que ens pugui donar problemes a l'hora de fer una predicció.
 
-Es pot observar la distribució en els seguents pairplots
+Es pot observar la distribució en els seguents pairplots (D'esquerra a dreta: Gest 0, Gest 1, Gest 2, Gest 3)
 
 ![](images/A/pairplots/gest0.png){ width=300px }
 ![](images/A/pairplots/gest1.png){ width=300px }
 ![](images/A/pairplots/gest2.png){ width=300px }
 ![](images/A/pairplots/gest3.png){ width=300px }
-
-D'esquerra a dreta: Gest 0, Gest 1, Gest 2, Gest 3
 
 
 ## Preprocessing
