@@ -10,15 +10,15 @@ numbersections: true
 # Apartat B
 
 En aquest primer apartat farem servir el dataset de càncer de pit de la llibreria sklearn.
-Provarem diferents models amb particions de test de tamanys diferents. L'objectiu és veure
+Provarem diferents models amb particions de test de mides diferents. L'objectiu és veure
 quin funciona millor pel dataset seleccionat.
 
 ## Introducció al dataset
-L'objectiu d'aquest dataset és detectar si un tumor es benigne o no. Per fer-ho tenim una
+L'objectiu d'aquest dataset és detectar si un tumor és benigne o no. Per fer-ho tenim una
 sèrie de features com ara la textura, el radi, etc. En total hi ha 30 features.
 
 ## Comparativa de models
-Per fer la comparativa hem escollit 4 models: Regressió Logistica, SVC amb el kernel rbf
+Per fer la comparativa hem escollit 4 models: Regressió Logística, SVC amb el kernel rbf
 KNN i Random Forest. A l'hora d'entrenar els models ho hem fet variant el percentatge de
 train i test. En la primera iteracó ho fem amb un 0.5 de test i 0.5 de train, la segona
 iteració amb un 0.3 de test i un 0.7 de train i finalment l'última amb un 0.2 de test i
@@ -29,9 +29,10 @@ un 0.8 de train. A continuació mostrem els resultats obtinguts:
     70%                   0.95     0.98    0.96                       0.98
     80%                   0.96     0.97    0.96                       0.96
 
-Com podem observar tots els models han funcionat bastant bé independentment de la mida de
-les particions. Entre ells podem destacar el SVC com el que millor ha funcionat, però tot i això, molt proper a la resta. Per tant sembla que per al dataset escollit tots els models
-provats ens servirien.
+Com podem observar tots els models han funcionat bastant bé independentment de 
+la mida de les particions. Entre ells podem destacar el SVC com el que millor 
+ha funcionat, però tot i això, molt proper a la resta. Per tant sembla que per 
+al dataset escollit tots els models provats ens servirien.
 
 A continuació donarem un cop d'ull a les corbes ROC i Precision-Recall. Per generar les
 corbes s'ha fet servir una partició del 80% de train i 20% de test.
@@ -53,7 +54,7 @@ les corbes ROC com les PR, amb l'àrea molt propera a 1. El Random Forest és l'
 el que hem obtingut molts bons resultats, també amb una àrea molt propera a 1.
 Els altres dos models tot i que no han obtingut resultats tan perfectes s'hi apropen molt.
 
-Per útlim ens quedaria mirar com afecta el valor de C als diferents kernels del SVC. Hem 
+Per últim ens quedaria mirar com afecta el valor de C als diferents kernels del SVC. Hem 
 creat una visualització per veure-ho gràficament:
 
 ![](images/B/C-effect/0.1.png){ width=600px }
@@ -101,14 +102,14 @@ següents:
 
 El número indica com identifiquem el gest dins del dataset.
 
-El dataset disposa de 65 atributs 64 dels quals són les lectures dels sensors 
+El dataset disposa de 65 atributs 64 dels quals són les lectures dels sensors
 (disposem de 8 sensors i realitzem 8 lectures a cada sensor per tant $8 \cdot 8 = 64$).
-L'altre atribut restant és el gest que està realitzant la persona. Els atributs 
-tots són númerics.
+L'altre atribut restant és el gest que està realitzant la persona. Els atributs
+tots són numèrics.
 
-Hem mirat a veure si hi ha alguna correlació entre X i y, però no veiem cap 
-correlació directe entre els valors dels diferents sensors i el gest resultant. 
-Podem veure-ho reflexat en el correlation plot següent:
+Hem mirat a veure si hi ha alguna correlació entre X i y, però no veiem cap
+correlació directa entre els valors dels diferents sensors i el gest resultant.
+Podem veure-ho reflectit en el correlation plot següent:
 
 ![](images/A/heatmap/correlationXy.png){ width=475px }
 
@@ -116,8 +117,8 @@ Les etiquetes estan balancejades. Hi ha pràcticament la mateixa quantitat de ca
 
 0: 2910, 1: 2903, 2: 2943, 3: 2922
 
-Totes les etiquetes tenen una distribució Gausiana. 
-Es pot observar la distribució en els seguents pairplots (d'esquerra a dreta: Gest 0, Gest 1, Gest 2, Gest 3)
+Totes les etiquetes tenen una distribució Gaussiana.
+Es pot observar la distribució en els següents pairplots (d'esquerra a dreta: Gest 0, Gest 1, Gest 2, Gest 3)
 
 ![](images/A/pairplots/gest0.png){ width=300px }
 ![](images/A/pairplots/gest1.png){ width=300px }
@@ -128,24 +129,22 @@ Per tant no creiem que ens pugui donar problemes a l'hora de fer una predicció.
 
 ## Preprocessing
 Per començar hem de preparar les dades per a poder fer coses amb elles, per tant
-començarem normalitzant les dades ja que els valors dels diferents sensors 
-varien molt entre ells. També hem de mirar que les dades no siguin nules o 
-buides ja que aquestes podrien interferir a l'hora de fer diferents metodes de 
-aprenentatge, per sort el nostre dataset no en tenia cap i no hem tingut que 
-fer cap neteja. Mirant les dades també hem determinat que tenim dades numeriques 
-ja que totes les classes ja venen codificades, per tant, codificar és un pas que 
-ja tenim fet. 
+començarem normalitzant-les, ja que els valors dels diferents sensors
+varien molt entre ells. També hem de mirar que les dades no siguin nul·les o
+buides, ja que aquestes podrien interferir a l'hora d'aplicar diferents mètodes
+d'aprenentatge, per sort el nostre dataset no en tenia cap i no hem hagut de
+fer cap neteja. També hem determinat que les dades són totes numèriques,
+ja que les classes ja venen codificades, i per tant no fa falta que ho fem nosaltres.
 
-Ens hem plantejat a fer servir una descomposició PCA però al no haber trobat cap 
-patró específic a les dades podem deduir que no serà una bona manera per reduir 
-les dimensions. També hem considerat aplicar PolynomialFeatures però no tindria 
-massa sentit, ja que en el nostre cas tenim un dataset el suficientment gran com 
-per a poder fer una bona predicció.
+Ens hem plantejat a fer servir una descomposició PCA, però com que no hem trobat cap
+patró específic a les dades, podem deduir que no serà una bona manera per reduir
+les dimensions. També hem considerat aplicar PolynomialFeatures, però no tindria
+massa sentit, ja que en el nostre cas tenim un dataset prou gran per a poder fer
+una bona predicció.
 
 ## Model Selection
-
-De cara a fer les prediccions hem probat diversos models, per veure qui és el que funciona
-millor amb el nostre dataset. Els models que hem probat són els següents:
+De cara a fer les prediccions hem provat diversos models, per veure qui és el que funciona
+millor amb el nostre dataset. Els models que hem provat són els següents:
 
 - Logistic Regression
 - SVC amb rbf kernel
@@ -155,55 +154,55 @@ millor amb el nostre dataset. Els models que hem probat són els següents:
 - Perceptron
 - Decision Tree
 
-Hem probat tots els models i hem mirat quina és l'accuracy de cada un d'ells. 
+Hem provat tots els models i hem mirat quina és l'accuracy de cada un d'ells.
 Els models que ens han brindat millor resultats són SVC amb el kernel rbf i
-Random Forest, tots dos amb un accuracy de més del 90%. La resta de models els 
-resultats no han sigut especialment bons, sobretot els que separen les dades 
-linealment com el SVC amb el kernel linear o la regressió logistica. Això és 
-degut a que les nostres dades no són divisibles linealent. 
+Random Forest, tots dos amb un accuracy de més del 90%. La resta de models els
+resultats no han sigut especialment bons, sobretot els que separen les dades
+linealment com el SVC amb el kernel linear o la regressió logística. Això és
+degut al fet que les nostres dades no són divisibles linealment.
 
 Pel que fa a la velocitat d'entrenament dels models tots han sigut força ràpids
-(qüestió de segons), excepte al SVC que era el més lent i ens ha tardat pocs 
+(qüestió de segons), excepte al SVC que era el més lent i ens ha tardat pocs
 minuts.
 
-En quant als ensembles hem vist que han funcionen força bé amb el nostre dataset
+Respecte als ensembles hem vist que funcionen força bé amb el nostre dataset
 com hem pogut veure amb el Random Forest.
 
-Els resultats númerics es poden veure amb més detall a l'\underline{\hyperref[annex:1]{Annex 1}}.
+Els resultats numèrics es poden veure amb més detall a l'\underline{\hyperref[annex:1]{Annex 1}}.
 
 ## Cross-validation
 
-Per asegurar que el nostre model és bó farem servir crossvalidation ja que a 
-vegades es pot donar el cas que haguem tingut sort a l'hora de dividir les dades 
-i haguem obtingut un bon resultat però que realment no tinguem un bon model. 
-Al fer cross-validation ens assegurem que el model és bó ja que provem amb 
-varies combinacions de dades i comprovem a veure si l'accuracy segueix sent bona
-o no. 
+Per assegurar que el nostre model és bo farem servir crossvalidation, ja que a
+vegades es pot donar el cas que hàgim tingut sort a l'hora de dividir les dades
+i hàgim obtingut un bon resultat, però que realment no tinguem un bon model.
+Al fer cross-validation ens assegurem que el model és bo, ja que provem amb
+diverses combinacions de dades i comprovem a veure si l'accuracy segueix sent bona
+o no.
 
-A l'hora de aplicar el cross validation hem probat diferents valors de k, desde 
-2 fins a 9. Més o menys hem obtingut els mateixos resultats amb els diferents 
-valors de k. Al tindre un dataset bastant gran considerem que aplicar el 
-LeaveOneOut no ens surt rentable ja que el temps necessari per aplicar-ho és 
+A l'hora d'aplicar el cross validation hem provat diferents valors de k, des de
+2 fins a 9. Més o menys hem obtingut els mateixos resultats amb els diferents
+valors de k. Al tindre un dataset bastant gran considerem que aplicar el
+LeaveOneOut no ens surt rentable ja que el temps necessari per aplicar-ho és
 massa gran.
 
-És important també trobar un balanç quan separarem la base de dades en conjunts 
-de train i test ja que si hi ha masses dades de train no tindrem suficients 
-dades per poder comprobar que el model estigui funcionant correctament, i si 
-tenim masses dades de test no tindrem suficient dades per entrenar el model i 
-que per tant pugui fer bones prediccions. Nosaltres hem trobat que amb un 80% 
+És important també trobar un balanç quan separarem la base de dades en conjunts
+de train i test, ja que si hi ha masses dades de train no tindrem suficients
+dades per poder comprovar que el model estigui funcionant correctament, i si
+tenim masses dades de test no tindrem suficients dades per entrenar el model i
+que per tant pugui fer bones prediccions. Nosaltres hem trobat que amb un 80%
 train i 20% test ens ha funcionat força bé.
 
 ## Metric Analysis 
-Per fer l'analisi métric hem considerat les metriques accuracy_score, f1_score 
-i average_precision_score. Pel nostre problema les tres metriques donen 
-practicament el mateix resultat ja que les nostres dades estan molt 
-balancejades, per tant les tres metriques són igual d'adients pel nostre dataset.
+Per fer l'anàlisi mètric hem considerat les mètriques accuracy_score, f1_score
+i average_precision_score. Pel nostre problema les tres mètriques donen
+pràcticament el mateix resultat, ja que les nostres dades estan molt
+balancejades, per tant les tres mètriques són igual d'adients pel nostre dataset.
 
-Farem servir la Precision Recall Curve i la ROC curve. Les dues ens poden ser 
-de utilitat ja que el nostre dataset esta balancejat. La PR Curve mostra la 
-relacio entre la precisio i el recall per tant volem que el final de la corva 
-sigui el maxim possible, es a dir, el mes proper a 1. En canvi, la ROC Curve 
-mostren la comparacio entre el ratio de positius verdades i el ratio de positius 
+Farem servir la Precision Recall Curve i la ROC curve. Les dues ens poden ser
+d'utilitat, ja que el nostre dataset està balancejat. La PR Curve mostra la
+relació entre la precisió i el recall per tant volem que el final de la corba
+sigui el màxim possible, és a dir, el més proper a 1. En canvi, la ROC Curve
+mostren la comparació entre la ràtio de positius verdaders i la ràtio de positius
 falsos.
 
 PR curves: 
@@ -224,51 +223,50 @@ ROC curves:
 ![](images/A/roc-curves/SVC_rbf.png){ width=300px }
 ![](images/A/roc-curves/SVC_linear.png){ width=300px }
 
-Amb les corves anteriors podem veure clarament el que comentavem abans, els
+Amb les corbes anteriors podem veure clarament el que comentàvem abans, els
 classificadors lineals tenen un rendiment molt baix, mentre que el SVC amb el
-kernel rbf i el Random Forest brinden molt bons resultats amb una area entre
+kernel rbf i el Random Forest brinden molt bons resultats amb una àrea entre
 0.95 i 1, depenent de la classe. El que resulta interessant destacar és que
 tots els models tenen més dificultats a classificar la classe 3 (gest Ok), que
 la resta de classes. Això és probable que sigui perquè els sensors no captin
-valors gaire espesifics a l'hora de fer el gest Ok, i per tant al classificador
+valors gaire específics a l'hora de fer el gest Ok, i per tant al classificador
 té més problemes a l'hora d'identificar-lo.
 
-El classification_report mostra els scores de precisio, recall f1-score i el 
-support dels diferents metodes que em empleat. Per veure les dades en detall a 
-l'Annex 1.
+El classification_report mostra els scores de precisió, recall f1-score i el
+suport dels diferents mètodes que hem utilitzat. Els resultats numèrics es poden
+veure amb més detall a l'\underline{\hyperref[annex:1]{Annex 1}}.
 
 ## Hyperparameter Search
 - Quines formes de buscar el millor parametre heu trobat? Són costoses computacionalment parlant?
 
-Hem trobat els metodes de GridSearchCV i RandomizedSearchCV de Sklearn. El
-GridSearchCV rep un diccionari i el numero de cross validations a fer, i el que 
-fa és a partir dels valors donats en el diccionari, els associa amb els 
-parametres del model i troba els millors valors. El RandomizedSearchCV funciona 
-de manera similar al GridSearchCV però aplicant l'atzar. Rep com a parametres 
-la quantitat de iteracions a fer i el numero de cross validations. El cost es 
-menor en el RandomizedSearchCV però sacrificant la possibilitat de no trobar 
-els valors més optims pel model, cosa que si que asegura més el GridSearchCV a 
+Hem trobat els mètodes de GridSearchCV i RandomizedSearchCV de Sklearn. El
+GridSearchCV rep un diccionari i el número de cross validations a fer, i el que
+fa és a partir dels valors donats en el diccionari, els associa amb els
+paràmetres del model i troba els millors valors. El RandomizedSearchCV funciona
+de manera similar al GridSearchCV però aplicant l'atzar. Rep com a paràmetres
+la quantitat d'iteracions a fer i el número de cross validations. El cost és
+menor en el RandomizedSearchCV, però sacrificant la possibilitat de no trobar
+els valors òptims pel model, cosa que sí que assegura més el GridSearchCV a
 costa de ser més costos i per tant més lent.
 
 - Si disposem de recursos limitats (per exemple, un PC durant 1 hora) quin dels dos métodes creieu que obtindrà millor resultat final?
 
-RandomizedSearchCV, ja que en una hora potser no troba el model més optim pero 
-al menys el trobara cosa que no asegura el GridSearchCV perque té un cost 
-computacional més alt.
+RandomizedSearchCV, ja que evita provar combinacions innecessàries, i per tant la complexitat computacional
+és menor. A canvi sacrifiques el fet que poder els resultats que trobes no són els òptims.
 
 - Feu la prova, i amb el model i el metode de crossvalidació escollit, configureu els diferents metodes de búsqueda per a que s'executin durant el mateix temps (i.e. depenent del problema, 0,5h-1 hora). Analitzeu quin ha arribat a una millor solució. (estimeu el temps que trigarà a fer 1 training, i aixi trobeu el número de intents que podeu fer en cada cas.)
 
-Per trobar el millor parametre hem trobat els metodes de GridSearchCV i 
-RandomizedSearchCV de Sklearn. El GridSearchCV rep un diccionari i el numero de
-cross validations a fer, i el que fa és a partir dels valors donats en el 
-diccionari, els associa amb els parametres del model i troba els millors valors. 
-El RandomizedSearchCV funciona de manera similar al GridSearchCV però aplicant 
-l'atzar. Rep com a parametres la quantitat de iteracions a fer i el numero de 
-cross validations. El cost es menor en el RandomizedSearchCV però sacrificant 
-la possibilitat de no trobar els valors més optims pel model, cosa que si que 
-asegura més el GridSearchCV a costa de ser més costos i per tant més lent. 
-Nosaltre hem decidit fer servir el GridSeatchCV però si tinguesim temps limitat 
-seria millor fer servir el RandomizedSearchCV. Hem obtingut els seguents 
+Per trobar el millor paràmetre hem trobat els mètodes de GridSearchCV i
+RandomizedSearchCV de Sklearn. El GridSearchCV rep un diccionari i el número de
+cross validations a fer, i el que fa és a partir dels valors donats en el
+diccionari, els associa amb els paràmetres del model i troba els millors valors.
+El RandomizedSearchCV funciona de manera similar al GridSearchCV però aplicant
+l'atzar. Rep com a paràmetres la quantitat d'iteracions a fer i el número de
+cross validations. El cost és menor en el RandomizedSearchCV, però sacrificant
+la possibilitat de no trobar els valors òptims pel model, cosa que sí que
+assegura més el GridSearchCV a costa de ser més costos i per tant més lent.
+Nosaltres hem decidit fer servir el GridSeatchCV, però si tinguéssim temps limitat
+seria millor fer servir el RandomizedSearchCV. Hem obtingut els següents
 resultats:
 
 ### Parametres
@@ -321,7 +319,7 @@ Decision Tree
 
 # Annex
 
-## Resultats Model Analysis
+## Resultats Classification Report
 \label{annex:1}
 
 ### Logistic Regression
