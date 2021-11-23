@@ -9,20 +9,7 @@ numbersections: true
 
 # Apartat B
 
-En aquest primer apartat farem servir el dataset de cancer de pit de la llibreria sklearn.
-Probarem diferents models amb particions de test de tamanys diferents. L'objectiu és veure
-quin funciona millor per el dataset seleccionat.
-
-## Introducció al dataset
-L'objectiu d'aquest dataset és detectar si un tumor es benigne o no. Per fer-ho tenim una
-serie de features com ara la textura, el radi, etc. En total hi ha 30 features.
-
-## Comparativa de models
-Per fer la comparativa hem escollit 4 models: Regressió Logistica, SVC amb el kernel rbf
-KNN i Random Forest. A l'hora d'entrenar els models ho hem fet variant el percentatge de 
-train i test. En la primera iteracó ho fem amb un 0.5 de test i 0.5 de train, la segona 
-iteració amb un 0.3 de test i un 0.7 de train  i finalment la última amb un 0.2 de test i 
-un 0.8 de train. A continuació mostrem els resultats obtinguts:En aquest primer apartat farem servir el dataset de càncer de pit de la llibreria sklearn.
+En aquest primer apartat farem servir el dataset de càncer de pit de la llibreria sklearn.
 Provarem diferents models amb particions de test de tamanys diferents. L'objectiu és veure
 quin funciona millor pel dataset seleccionat.
 
@@ -86,17 +73,26 @@ C = 1
 
 El valor de C no afecta al kernel lineal pero si que canvia el resultat del kernel rbf
 que acota més la classificació del vermell respecte a la versió amb la C de 0.1. Tot i
-així en cap dels 3 casos obtenim masses classificacions errones.
+així en cap dels 3 casos obtenim gaires classificacions errones.
 
 # Apartat A
+De cara a aquest apartat ja ens enfocarem en un dataset amb més dades i d'on hi podem
+treure més suc. Igual que en l'apartat anterior probarem diversos models per trobar el
+que funciona millor i també farem probes per veure quins parametres fan funcionar millor
+cada model.
 
 ## Exploratory Data Analysis
 
-Aquest dataset està destinat a crear protesis robotiques que permetin a un usuari sense braç moure la protesi al seu gust.
-Per tant el gest que estigui fent aquesta persona serà el target, ja que ens interessa preveure quin gest fa la persona per així
-moure el braç robotic a aquesta posició.
+Aquest dataset està destinat a crear protesis robotiques que permetin a un
+usuari sense braç moure la protesi al seu gust.
 
-El dataset conte dades registrades de 8 sensors situats a l'avantbraç d'una persona mentre fa un dels 4 gestos predefinits. Aquests 4 gestos són els següents:
+Per tant el gest que estigui fent aquesta persona serà el target, ja que ens 
+interessa preveure quin gest fa la persona per així moure el braç robotic a 
+aquesta posició.
+
+El dataset conte dades registrades de 8 sensors situats a l'avantbraç d'una 
+persona mentre fa un dels 4 gestos predefinits. Aquests 4 gestos són els 
+següents:
 
     0: pedra
     1: tisores
@@ -107,48 +103,44 @@ El número indica com identifiquem el gest dins del dataset.
 
 El dataset disposa de 65 atributs 64 dels quals són les lectures dels sensors 
 (disposem de 8 sensors i realitzem 8 lectures a cada sensor per tant $8 \cdot 8 = 64$).
-L'altre atribut restant és el gest que està realitzant la persona. Els atributs tots són númerics.
+L'altre atribut restant és el gest que està realitzant la persona. Els atributs 
+tots són númerics.
 
-- Podeu veure alguna correlació entre X i y?
-No veiem cap correlació directe entre els valors dels diferents sensors i el gest resultant.
+Hem mirat a veure si hi ha alguna correlació entre X i y, però no veiem cap 
+correlació directe entre els valors dels diferents sensors i el gest resultant. 
+Podem veure-ho reflexat en el correlation plot següent:
 
-![](images/A/heatmap/correlationXy.png){ width=500px }
+![](images/A/heatmap/correlationXy.png){ width=475px }
 
-- Estan balancejades les etiquetes (distribució similar entre categories)? Creus que pot afectar a la classificació la seva distribució?
-Sí, hi ha pràcticament la mateixa quantitat de cada etiqueta:
+Les etiquetes estan balancejades. Hi ha pràcticament la mateixa quantitat de cada etiqueta:
 
 0: 2910, 1: 2903, 2: 2943, 3: 2922
 
-Per tant no creiem que ens pugui donar problemes a l'hora de fer una predicció.
-
-Es pot observar la distribució en els seguents pairplots (D'esquerra a dreta: Gest 0, Gest 1, Gest 2, Gest 3)
+Totes les etiquetes tenen una distribució Gausiana. 
+Es pot observar la distribució en els seguents pairplots (d'esquerra a dreta: Gest 0, Gest 1, Gest 2, Gest 3)
 
 ![](images/A/pairplots/gest0.png){ width=300px }
 ![](images/A/pairplots/gest1.png){ width=300px }
 ![](images/A/pairplots/gest2.png){ width=300px }
 ![](images/A/pairplots/gest3.png){ width=300px }
 
+Per tant no creiem que ens pugui donar problemes a l'hora de fer una predicció.
 
 ## Preprocessing
+Per començar hem de preparar les dades per a poder fer coses amb elles, per tant
+començarem normalitzant les dades ja que els valors dels diferents sensors 
+varien molt entre ells. També hem de mirar que les dades no siguin nules o 
+buides ja que aquestes podrien interferir a l'hora de fer diferents metodes de 
+aprenentatge, per sort el nostre dataset no en tenia cap i no hem tingut que 
+fer cap neteja. Mirant les dades també hem determinat que tenim dades numeriques 
+ja que totes les classes ja venen codificades, per tant, codificar és un pas que 
+ja tenim fet. 
 
-- Estàn les dades normalitzades? Caldria fer-ho? 
-Si, estan normalitzades. Cal fer-ho ja que els valors del diferents sensors varien molt entre ells.
-
-- En cas que les normalitzeu, quin tipus de normalització será més adient per les vostres dades?
-Estandarització
-
-
-- Teniu gaires dades sense informació? Els NaNs a pandas? Tingueu en compte que hi ha metodes que no els toleren durant el aprenentatge. Com afecta a la classificació si les filtrem? I si les reompliu? Com ho farieu?
-No hi ha dades sense informació ni NaNs, per tant els metodes d'apranentatge que es puguin veure afectats per ells no ho seran.
-
-- Teniu dades categoriques? Quina seria la codificació amb més sentit? (`OrdinalEncoder`, `OneHotEncoder`, d'altres?)
-Totes les dades són númeriques ja que les classes ja venen codificades.
-
-- Caldria aplicar `sklearn.decomposition.PCA`? Quins beneficis o inconvenients trobarieu?
-No, ja que no hi ha un patró específic a les dades, per tant, PCA no es una bona manera per reduir les dimensions.
-
-- Es poden aplicar `PolynomialFeatures` per millorar la classificació? En quins casos té sentit fer-ho?
-Podriem aplicar PolynomialFeatures, però no tindria massa sentit, ja que en el nostre cas tenim un dataset el suficientment gran com per a poder fer una bona predicció.
+Ens hem plantejat a fer servir una descomposició PCA però al no haber trobat cap 
+patró específic a les dades podem deduir que no serà una bona manera per reduir 
+les dimensions. També hem considerat aplicar PolynomialFeatures però no tindria 
+massa sentit, ja que en el nostre cas tenim un dataset el suficientment gran com 
+per a poder fer una bona predicció.
 
 ## Model Selection
 
@@ -164,64 +156,168 @@ millor amb el nostre dataset. Els models que hem probat són els següents:
 - Decision Tree
 
 Hem probat tots els models i hem mirat quina és l'accuracy de cada un d'ells. 
-Els models que ens han brindat millor resultats són SVC amb el kernel rbf i Random Forest,
-tots dos amb un accuracy de més del 90%. La resta de models els resultats no han sigut 
-especialment bons, sobretot els que separen les dades linealment com el SVC amb el kernel 
-linear o la regressió logistica. Això és degut a que les nostres dades no són divisibles
-linealent.
+Els models que ens han brindat millor resultats són SVC amb el kernel rbf i
+Random Forest, tots dos amb un accuracy de més del 90%. La resta de models els 
+resultats no han sigut especialment bons, sobretot els que separen les dades 
+linealment com el SVC amb el kernel linear o la regressió logistica. Això és 
+degut a que les nostres dades no són divisibles linealent. 
 
-Els resultats a més detall es poden veure a l'\hyperref[annex:1]{Annex 1}.
+Pel que fa a la velocitat d'entrenament dels models tots han sigut força ràpids
+(qüestió de segons), excepte al SVC que era el més lent i ens ha tardat pocs 
+minuts.
 
-aaaaaaaaaaaaaaaaaaa
+En quant als ensembles hem vist que han funcionen força bé amb el nostre dataset
+com hem pogut veure amb el Random Forest.
 
-- Quins models heu considerat?
-- Considereu les SVM amb els diferents kernels implementats? Si, rbf i linear
-- Quin creieu que serà el més precís?
-RBF és més precís ja que el nostre dataset no es divisible linealment. Tenim el mateix
-problema amb la resta de models lineals.
-- Quin serà el més ràpid?
-- Seria una bona idea fer un ensemble? Quins inconvenients creieu que pot haver-hi?
-Sería bona idea fer servir un ensamble tipus Random Forest que ja em vist que funciona
-bé, però no tindria massa sentit fer un ensamble de tots els models que tenim ja que son 
-models ja molt potents.
+Els resultats númerics es poden veure amb més detall a l'\underline{\hyperref[annex:1]{Annex 1}}.
 
 ## Cross-validation
 
-- Per què és important cross-validar els resultats?
-Perque a vegades es pot donar el cas que haguem tingut sort a l'hora de dividir les dades i haguem
-obtingut un bon resultat però que realment no tinguem un bon model. Al fer cross-validation ens assegurem
-que el model és bó ja que provem amb varies combinacions de dades i comprovem a veure si l'accuracy segueix
-sent bona o no.
+Per asegurar que el nostre model és bó farem servir crossvalidation ja que a 
+vegades es pot donar el cas que haguem tingut sort a l'hora de dividir les dades 
+i haguem obtingut un bon resultat però que realment no tinguem un bon model. 
+Al fer cross-validation ens assegurem que el model és bó ja que provem amb 
+varies combinacions de dades i comprovem a veure si l'accuracy segueix sent bona
+o no. 
 
-- Separa la base de dades en el conjunt de train-test. Com de fiables serán els resultats obtinguts? En quins casos serà més fiable, si tenim moltes dades d'entrenament o poques?
-Els resultats obtinguts haurien de ser fiables, ja que es amb el que construiras el model. Es important trobar un balanç entre la quantitat de dades en el training i en el test ja que si hi ha massa trainging no tindrem suficient test per poder comprobar que el model estigui funcionant correctament, i si tenim massa test no tindrem suficient dades al training per a que el model pugui fer bones prediccions.
+A l'hora de aplicar el cross validation hem probat diferents valors de k, desde 
+2 fins a 9. Més o menys hem obtingut els mateixos resultats amb els diferents 
+valors de k. Al tindre un dataset bastant gran considerem que aplicar el 
+LeaveOneOut no ens surt rentable ja que el temps necessari per aplicar-ho és 
+massa gran.
 
-- Quin tipus de K-fold heu escollit? Quants conjunts heu seleccionat (quina k)? Com afecta els diferents valors de k?
-Hem probat diferents valors de k, desde 2 dins a 9. Més o menys hem obtingut els mateixos
-resultats amb les diferents ks.
-
-- Es viable o convenient aplicar LeaveOneOut?
-No, ja que el nostre dataset es bastant gran i no surt rentable, ja que el temps necessari
-per aplicar LeaveOneOut és massa gran.
+És important també trobar un balanç quan separarem la base de dades en conjunts 
+de train i test ja que si hi ha masses dades de train no tindrem suficients 
+dades per poder comprobar que el model estigui funcionant correctament, i si 
+tenim masses dades de test no tindrem suficient dades per entrenar el model i 
+que per tant pugui fer bones prediccions. Nosaltres hem trobat que amb un 80% 
+train i 20% test ens ha funcionat força bé.
 
 ## Metric Analysis 
-- A teoria, hem vist el resultat d'aplicar el accuracy_score sobre dades no balancejades. Podrieu explicar i justificar quina de les següents mètriques será la més adient pel vostre problema? accuracy_score, f1_score o average_precision_score.
-Pel nostre problema les tres metriques donen practicament el mateix resultat ja que les nostres dades estan molt balancejades, per tant les tres metriques són igual d'adients pel nostre dataset.
+Per fer l'analisi métric hem considerat les metriques accuracy_score, f1_score 
+i average_precision_score. Pel nostre problema les tres metriques donen 
+practicament el mateix resultat ja que les nostres dades estan molt 
+balancejades, per tant les tres metriques són igual d'adients pel nostre dataset.
 
-- Mostreu la Precisió-Recall Curve i la ROC Curve. Quina és més rellevant pel vostre dataset? Expliqueu amb les vostres paraules, la diferencia entre una i altre
-Les dues ens poden ser de utilitat ja que el nostre dataset esta balancejat. La PR Curve mostra la relacio entre la precisio i el recall per tant volem que el final de la corva sigui el maxim possible, es a dir, el mes proper a 1. En canvi, la ROC Curve mostren la comparacio entre el ratio de positius verdades i el ratio de positius falsos.
+Farem servir la Precision Recall Curve i la ROC curve. Les dues ens poden ser 
+de utilitat ja que el nostre dataset esta balancejat. La PR Curve mostra la 
+relacio entre la precisio i el recall per tant volem que el final de la corva 
+sigui el maxim possible, es a dir, el mes proper a 1. En canvi, la ROC Curve 
+mostren la comparacio entre el ratio de positius verdades i el ratio de positius 
+falsos.
 
-- Què mostra classification_report? Quina métrica us fixareu per tal de optimitzar-ne la classificació pel vostre cas?
+PR curves: 
+
+![](images/A/pr-curves/DecisionTreeClassifier.png){ width=300px }
+![](images/A/pr-curves/KNN.png){ width=300px }
+![](images/A/pr-curves/LogisticRegression.png){ width=300px }
+![](images/A/pr-curves/RandomForestClassifier.png){ width=300px }
+![](images/A/pr-curves/SVC_rbf.png){ width=300px }
+![](images/A/pr-curves/SVC_linear.png){ width=300px }
+
+ROC curves:
+
+![](images/A/roc-curves/DecisionTreeClassifier.png){ width=300px }
+![](images/A/roc-curves/KNN.png){ width=300px }
+![](images/A/roc-curves/LogisticRegression.png){ width=300px }
+![](images/A/roc-curves/RandomForestClassifier.png){ width=300px }
+![](images/A/roc-curves/SVC_rbf.png){ width=300px }
+![](images/A/roc-curves/SVC_linear.png){ width=300px }
+
+Amb les corves anteriors podem veure clarament el que comentavem abans, els
+classificadors lineals tenen un rendiment molt baix, mentre que el SVC amb el
+kernel rbf i el Random Forest brinden molt bons resultats amb una area entre
+0.95 i 1, depenent de la classe. El que resulta interessant destacar és que
+tots els models tenen més dificultats a classificar la classe 3 (gest Ok), que
+la resta de classes. Això és probable que sigui perquè els sensors no captin
+valors gaire espesifics a l'hora de fer el gest Ok, i per tant al classificador
+té més problemes a l'hora d'identificar-lo.
+
+El classification_report mostra els scores de precisio, recall f1-score i el 
+support dels diferents metodes que em empleat. Per veure les dades en detall a 
+l'Annex 1.
 
 ## Hyperparameter Search
-
 - Quines formes de buscar el millor parametre heu trobat? Són costoses computacionalment parlant?
+
+Hem trobat els metodes de GridSearchCV i RandomizedSearchCV de Sklearn. El
+GridSearchCV rep un diccionari i el numero de cross validations a fer, i el que 
+fa és a partir dels valors donats en el diccionari, els associa amb els 
+parametres del model i troba els millors valors. El RandomizedSearchCV funciona 
+de manera similar al GridSearchCV però aplicant l'atzar. Rep com a parametres 
+la quantitat de iteracions a fer i el numero de cross validations. El cost es 
+menor en el RandomizedSearchCV però sacrificant la possibilitat de no trobar 
+els valors més optims pel model, cosa que si que asegura més el GridSearchCV a 
+costa de ser més costos i per tant més lent.
 
 - Si disposem de recursos limitats (per exemple, un PC durant 1 hora) quin dels dos métodes creieu que obtindrà millor resultat final?
 
-- Existeixen altres mètodes de búsqueda més eficients (scikit-optimize)?
+RandomizedSearchCV, ja que en una hora potser no troba el model més optim pero 
+al menys el trobara cosa que no asegura el GridSearchCV perque té un cost 
+computacional més alt.
 
 - Feu la prova, i amb el model i el metode de crossvalidació escollit, configureu els diferents metodes de búsqueda per a que s'executin durant el mateix temps (i.e. depenent del problema, 0,5h-1 hora). Analitzeu quin ha arribat a una millor solució. (estimeu el temps que trigarà a fer 1 training, i aixi trobeu el número de intents que podeu fer en cada cas.)
+
+Per trobar el millor parametre hem trobat els metodes de GridSearchCV i 
+RandomizedSearchCV de Sklearn. El GridSearchCV rep un diccionari i el numero de
+cross validations a fer, i el que fa és a partir dels valors donats en el 
+diccionari, els associa amb els parametres del model i troba els millors valors. 
+El RandomizedSearchCV funciona de manera similar al GridSearchCV però aplicant 
+l'atzar. Rep com a parametres la quantitat de iteracions a fer i el numero de 
+cross validations. El cost es menor en el RandomizedSearchCV però sacrificant 
+la possibilitat de no trobar els valors més optims pel model, cosa que si que 
+asegura més el GridSearchCV a costa de ser més costos i per tant més lent. 
+Nosaltre hem decidit fer servir el GridSeatchCV però si tinguesim temps limitat 
+seria millor fer servir el RandomizedSearchCV. Hem obtingut els seguents 
+resultats:
+
+### Parametres
+    'LogisticRegression': {'penalty': ['l1', 'l2'], 'C': [0.01, 0.1, 1, 10, 100, 1000]},
+    'SVC rbf': {'C': [0.1, 1, 10, 100], 'gamma': [0.01, 0.1, 1, 10]},
+    'SVC linear': {'C': [0.1, 1, 10, 100], 'gamma': [0.01, 0.1, 1, 10]},
+    'KNN': {
+        'n_neighbors' : [5,7,9,11,13,15],
+        'weights' : ['uniform','distance'],
+        'metric' : ['minkowski','euclidean','manhattan']
+    },
+    'RandomForestClassifier': {
+        'n_estimators': [10, 50, 100, 200, 500],
+        'max_features': ['auto', 'sqrt', 'log2'],
+        'max_depth': [10, 50, 100, 200]
+    },
+    'Perceptron': {'penalty': ['l1', 'l2'], 'alpha': [0.0001, 0.001, 0.01, 0.1, 1, 10]},
+    'DecisionTreeClassifier': {'max_depth': [2, 3, 5, 10, 20, 50]}
+
+### Resultats
+Regressio Logistica
+
+    Best params:  {'C': 10, 'penalty': 'l2'}
+    Best score:  0.34
+
+SVC rbf
+
+    Best params:  {'C': 0.1, 'gamma': 0.01}
+    Best score:  0.25
+
+KNN
+
+    Best params:  {'metric': 'minkowski', 'n_neighbors': 9, 'weights': 'distance'}
+    Best score:  0.68
+
+Random Forest
+
+    Best params:  {'max_depth': 100, 'max_features': 'log2', 'n_estimators': 500}
+    Best score:  0.92
+
+Perceptron
+
+    Best params:  {'alpha': 0.01, 'penalty': 'l1'}
+    Best score:  0.31
+
+Decision Tree
+
+    Best params:  {'max_depth': 20}
+    Best score:  0.79
 
 # Annex
 
