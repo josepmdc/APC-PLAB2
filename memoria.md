@@ -110,6 +110,7 @@ correlació directa entre els valors dels diferents sensors i el gest resultant.
 Podem veure-ho reflectit en el correlation plot següent:
 
 ![](images/A/heatmap/correlationXy.png){ width=475px }
+
 (64 és el target i 0-7 les features)
 
 Les etiquetes estan balancejades. Hi ha pràcticament la mateixa quantitat de cada etiqueta:
@@ -244,7 +245,6 @@ models, seguint la línia del que comentavem fins ara.
 Els resultats numèrics es poden veure amb més detall a l'\underline{\hyperref[annex:1]{Annex 1}}.
 
 ## Hyperparameter Search
-- Quines formes de buscar el millor parametre heu trobat? Són costoses computacionalment parlant?
 El que resultaria interessant per millorar el rendiment dels models és probar
 les diferents combinacions dels parametres d'entrada i veure quins funcionen
 millor. Per fer-ho hem trobat els mètodes de GridSearchCV i RandomizedSearchCV 
@@ -291,8 +291,8 @@ Regressio Logistica
 
 SVC rbf
 
-    Best params:  {'C': 0.1, 'gamma': 0.01}
-    Best score:  0.25
+    Best params:  {'C': 10, 'gamma': 0.1}
+    Best score:  0.91
 
 KNN
 
@@ -327,6 +327,8 @@ obtenim pràcticament els mateixos resultats però amb molt menys temps. Pel que
 fa a la resta de classificadors han funcionat bastant malament, sobretot els
 classificadors lineals, principalment per la naturalesa de les dades del nostre
 dataset.
+
+\newpage
 
 # Annex
 
