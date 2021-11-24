@@ -85,11 +85,9 @@ cada model.
 ## Exploratory Data Analysis
 
 Aquest dataset està destinat a crear protesis robotiques que permetin a un
-usuari sense braç moure la protesi al seu gust.
-
-Per tant el gest que estigui fent aquesta persona serà el target, ja que ens 
-interessa preveure quin gest fa la persona per així moure el braç robotic a 
-aquesta posició.
+usuari sense braç moure la protesi al seu gust. Per tant el gest que estigui 
+fent aquesta persona serà el target, ja que ens interessa preveure quin gest fa
+la persona per així moure el braç robotic a aquesta posició.
 
 El dataset conte dades registrades de 8 sensors situats a l'avantbraç d'una 
 persona mentre fa un dels 4 gestos predefinits. Aquests 4 gestos són els 
@@ -112,6 +110,7 @@ correlació directa entre els valors dels diferents sensors i el gest resultant.
 Podem veure-ho reflectit en el correlation plot següent:
 
 ![](images/A/heatmap/correlationXy.png){ width=475px }
+(64 és el target i 0-7 les features)
 
 Les etiquetes estan balancejades. Hi ha pràcticament la mateixa quantitat de cada etiqueta:
 
@@ -159,10 +158,11 @@ Els models que ens han brindat millor resultats són SVC amb el kernel rbf i
 Random Forest, tots dos amb un accuracy de més del 90%. La resta de models els
 resultats no han sigut especialment bons, sobretot els que separen les dades
 linealment com el SVC amb el kernel linear o la regressió logística. Això és
-degut al fet que les nostres dades no són divisibles linealment.
+degut al fet que les nostres dades no són divisibles linealment, i els
+classificadors no les poden separar correctament.
 
 Pel que fa a la velocitat d'entrenament dels models tots han sigut força ràpids
-(qüestió de segons), excepte al SVC que era el més lent i ens ha tardat pocs
+(qüestió de segons), excepte el SVC que era el més lent i ens ha tardat pocs
 minuts.
 
 Respecte als ensembles hem vist que funcionen força bé amb el nostre dataset
@@ -179,11 +179,15 @@ Al fer cross-validation ens assegurem que el model és bo, ja que provem amb
 diverses combinacions de dades i comprovem a veure si l'accuracy segueix sent bona
 o no.
 
-A l'hora d'aplicar el cross validation hem provat diferents valors de k, des de
-2 fins a 9. Més o menys hem obtingut els mateixos resultats amb els diferents
-valors de k. Al tindre un dataset bastant gran considerem que aplicar el
+Al tindre un dataset bastant gran considerem que aplicar el
 LeaveOneOut no ens surt rentable ja que el temps necessari per aplicar-ho és
-massa gran.
+massa gran. Així que només hem aplicat K-Fold.
+
+A l'hora d'aplicar el K-Fold hem provat diferents valors de k, des de
+2 fins a 9. Més o menys hem obtingut els mateixos resultats amb els diferents
+valors de k, el que vol dir que els resultats que hem obtingut previament eren
+valids. Els resultats numèrics es poden veure amb més detall a 
+l'\underline{\hyperref[annex:2]{Annex 2}}.
 
 És important també trobar un balanç quan separarem la base de dades en conjunts
 de train i test, ja que si hi ha masses dades de train no tindrem suficients
@@ -200,10 +204,11 @@ balancejades, per tant les tres mètriques són igual d'adients pel nostre datas
 
 Farem servir la Precision Recall Curve i la ROC curve. Les dues ens poden ser
 d'utilitat, ja que el nostre dataset està balancejat. La PR Curve mostra la
-relació entre la precisió i el recall per tant volem que el final de la corba
-sigui el màxim possible, és a dir, el més proper a 1. En canvi, la ROC Curve
-mostren la comparació entre la ràtio de positius verdaders i la ràtio de positius
-falsos.
+relació entre la precisió i el recall per tant volem que l'area sota la corba
+sigui el màxim possible, és a dir, el més proper a 1, i això és quan la corba
+passa per el punt (1, 1). En canvi, la ROC Curve mostren la comparació entre la 
+ràtio de positius verdaders i la ràtio de positius falsos. També volem 
+maximitzar l'area sota la corba, però en aquest cas l'òptim es a la posició (0, 1).
 
 PR curves: 
 
@@ -233,43 +238,34 @@ valors gaire específics a l'hora de fer el gest Ok, i per tant al classificador
 té més problemes a l'hora d'identificar-lo.
 
 El classification_report mostra els scores de precisió, recall f1-score i el
-suport dels diferents mètodes que hem utilitzat. Els resultats numèrics es poden
-veure amb més detall a l'\underline{\hyperref[annex:1]{Annex 1}}.
+suport dels diferents mètodes que hem utilitzat. Totes els metriques ens donen 
+bons resultats amb SVC amb rbf kernel i Random Forest i no tan amb la resta de
+models, seguint la línia del que comentavem fins ara.
+Els resultats numèrics es poden veure amb més detall a l'\underline{\hyperref[annex:1]{Annex 1}}.
 
 ## Hyperparameter Search
 - Quines formes de buscar el millor parametre heu trobat? Són costoses computacionalment parlant?
-
-Hem trobat els mètodes de GridSearchCV i RandomizedSearchCV de Sklearn. El
-GridSearchCV rep un diccionari i el número de cross validations a fer, i el que
-fa és a partir dels valors donats en el diccionari, els associa amb els
-paràmetres del model i troba els millors valors. El RandomizedSearchCV funciona
-de manera similar al GridSearchCV però aplicant l'atzar. Rep com a paràmetres
-la quantitat d'iteracions a fer i el número de cross validations. El cost és
-menor en el RandomizedSearchCV, però sacrificant la possibilitat de no trobar
-els valors òptims pel model, cosa que sí que assegura més el GridSearchCV a
-costa de ser més costos i per tant més lent.
-
-- Si disposem de recursos limitats (per exemple, un PC durant 1 hora) quin dels dos métodes creieu que obtindrà millor resultat final?
-
-RandomizedSearchCV, ja que evita provar combinacions innecessàries, i per tant la complexitat computacional
-és menor. A canvi sacrifiques el fet que poder els resultats que trobes no són els òptims.
-
-- Feu la prova, i amb el model i el metode de crossvalidació escollit, configureu els diferents metodes de búsqueda per a que s'executin durant el mateix temps (i.e. depenent del problema, 0,5h-1 hora). Analitzeu quin ha arribat a una millor solució. (estimeu el temps que trigarà a fer 1 training, i aixi trobeu el número de intents que podeu fer en cada cas.)
-
-Per trobar el millor paràmetre hem trobat els mètodes de GridSearchCV i
-RandomizedSearchCV de Sklearn. El GridSearchCV rep un diccionari i el número de
-cross validations a fer, i el que fa és a partir dels valors donats en el
-diccionari, els associa amb els paràmetres del model i troba els millors valors.
-El RandomizedSearchCV funciona de manera similar al GridSearchCV però aplicant
-l'atzar. Rep com a paràmetres la quantitat d'iteracions a fer i el número de
-cross validations. El cost és menor en el RandomizedSearchCV, però sacrificant
-la possibilitat de no trobar els valors òptims pel model, cosa que sí que
+El que resultaria interessant per millorar el rendiment dels models és probar
+les diferents combinacions dels parametres d'entrada i veure quins funcionen
+millor. Per fer-ho hem trobat els mètodes de GridSearchCV i RandomizedSearchCV 
+de Sklearn. El GridSearchCV rep un diccionari amb els diferents valors dels 
+parametres que volem probar i el número de cross validations a fer. A partir 
+d'això proba totes les combinacions d'aquests parametres i et diu quina
+combinació dona els millors resultats.
+El RandomizedSearchCV funciona de manera similar al GridSearchCV però aplicant 
+l'atzar. Rep com a paràmetres la quantitat d'iteracions a fer i el número de 
+cross validations. El cost és menor en el RandomizedSearchCV, però sacrificant 
+la possibilitat de no trobar els valors òptims pel model, cosa que sí que 
 assegura més el GridSearchCV a costa de ser més costos i per tant més lent.
-Nosaltres hem decidit fer servir el GridSeatchCV, però si tinguéssim temps limitat
-seria millor fer servir el RandomizedSearchCV. Hem obtingut els següents
-resultats:
 
-### Parametres
+Si disposem de recursos limitats, el RandomizedSearchCV obtindrà millor resultat 
+final, ja que evita provar combinacions innecessàries, i per tant la complexitat 
+computacional és menor. Però com que tenim temps hem decidit fer servir
+GridSearchCV.
+
+Hem definit els següents parametres per cada un dels models per veure quins d'ells
+funcionen millor:
+
     'LogisticRegression': {'penalty': ['l1', 'l2'], 'C': [0.01, 0.1, 1, 10, 100, 1000]},
     'SVC rbf': {'C': [0.1, 1, 10, 100], 'gamma': [0.01, 0.1, 1, 10]},
     'SVC linear': {'C': [0.1, 1, 10, 100], 'gamma': [0.01, 0.1, 1, 10]},
@@ -286,7 +282,8 @@ resultats:
     'Perceptron': {'penalty': ['l1', 'l2'], 'alpha': [0.0001, 0.001, 0.01, 0.1, 1, 10]},
     'DecisionTreeClassifier': {'max_depth': [2, 3, 5, 10, 20, 50]}
 
-### Resultats
+Els resultats han sigut els següents:
+
 Regressio Logistica
 
     Best params:  {'C': 10, 'penalty': 'l2'}
@@ -304,7 +301,7 @@ KNN
 
 Random Forest
 
-    Best params:  {'max_depth': 100, 'max_features': 'log2', 'n_estimators': 500}
+    Best params:  {'max_depth': 100, 'max_features': 'log2', 'n_estimators': 200}
     Best score:  0.92
 
 Perceptron
@@ -316,6 +313,20 @@ Decision Tree
 
     Best params:  {'max_depth': 20}
     Best score:  0.79
+
+La majoria no han millorat gaire o s'han quedat igual, així que sembla que els
+paràmetres que teníem d'abans ja funcionaven bé.
+
+# Conclusions
+Després d'analitzar els diferents models i fer diverses comprovacions hem vist
+que hi ha alguns models que funcionen molt bé i d'altres que no tant. Els que
+millor han funcionat són SVC rbf i Random Forest, tot i això el temps de
+convergència de SVC ha sigut bastant elevat, mentre que el del Random Forest
+no. Això ens inclinaria a fer servir el Random Forest de cara al futur, ja que
+obtenim pràcticament els mateixos resultats però amb molt menys temps. Pel que 
+fa a la resta de classificadors han funcionat bastant malament, sobretot els
+classificadors lineals, principalment per la naturalesa de les dades del nostre
+dataset.
 
 # Annex
 
@@ -414,6 +425,7 @@ Decision Tree
     weighted avg       0.78      0.78      0.78      2336
 
 ## Cross-Validation
+\label{annex:2}
 
 ### Logistic Regression
 **K-Fold**

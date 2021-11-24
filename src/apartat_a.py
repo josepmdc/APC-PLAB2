@@ -32,25 +32,28 @@ def apartat_a():
     # Observem les distribucions dels diferents gestos
     # Només ens fixem en les 8 primeres columnes ja que la resta són lectures
     # dels mateixos sensors una altre vegada
-    # sns.pairplot(dataset0.iloc[:, :8])
-    # plt.savefig("images/A/pairplots/gest0")
+    sns.pairplot(dataset0.iloc[:, :8])
+    plt.savefig("images/A/pairplots/gest0")
 
-    # sns.pairplot(dataset1.iloc[:, :8])
-    # plt.savefig("images/A/pairplots/gest1")
+    sns.pairplot(dataset1.iloc[:, :8])
+    plt.savefig("images/A/pairplots/gest1")
 
-    # sns.pairplot(dataset2.iloc[:, :8])
-    # plt.savefig("images/A/pairplots/gest2")
+    sns.pairplot(dataset2.iloc[:, :8])
+    plt.savefig("images/A/pairplots/gest2")
 
-    # sns.pairplot(dataset3.iloc[:, :8])
-    # plt.savefig("images/A/pairplots/gest3")
+    sns.pairplot(dataset3.iloc[:, :8])
+    plt.savefig("images/A/pairplots/gest3")
 
     # Agafem la última columna com a target i la resta com a input variables
     X = dataset.drop(dataset.columns[-1], axis=1)
+    scaler = StandardScaler()
+    scaler.fit(X)
+    X = scaler.transform(X)
     y = dataset.iloc[:, -1]
 
-    # plt.figure(figsize = (10, 7))
-    # sns.heatmap(dataset.iloc[:, :8].join(dataset[64]).corr(), annot=True, linewidths=.5)
-    # plt.savefig("images/A/heatmap/correlationXy")
+    plt.figure(figsize = (10, 7))
+    sns.heatmap(dataset.iloc[:, :8].join(dataset[64]).corr(), annot=True, linewidths=.5)
+    plt.savefig("images/A/heatmap/correlationXy")
 
     scaler = StandardScaler()
 
@@ -66,26 +69,8 @@ def apartat_a():
 
     model_names = ['LogisticRegression', 'SVC_rbf', 'SVC_linear', 'KNN', 'RandomForestClassifier', 'Perceptron', 'DecisionTreeClassifier']
 
-    param_grid = {
-        'LogisticRegression': {'penalty': ['l1', 'l2'], 'C': [0.01, 0.1, 1, 10, 100, 1000]},
-        'SVC rbf': {'C': [0.1, 1, 10, 100], 'gamma': [0.01, 0.1, 1, 10]},
-        'SVC linear': {'C': [0.1, 1, 10, 100], 'gamma': [0.01, 0.1, 1, 10]},
-        'KNN': {
-            'n_neighbors' : [5,7,9,11,13,15],
-            'weights' : ['uniform','distance'],
-            'metric' : ['minkowski','euclidean','manhattan']
-        },
-        'RandomForestClassifier': {
-            'n_estimators': [10, 50, 100, 200, 500],
-            'max_features': ['auto', 'sqrt', 'log2'],
-            'max_depth': [10, 50, 100, 200]
-        },
-        'Perceptron': {'penalty': ['l1', 'l2'], 'alpha': [0.0001, 0.001, 0.01, 0.1, 1, 10]},
-        'DecisionTreeClassifier': {'max_depth': [2, 3, 5, 10, 20, 50]}
-    }
-
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-    
+
     n_classes = len(np.unique(y_train))
 
     for model_name, model in zip(model_names, models):
@@ -100,11 +85,11 @@ def apartat_a():
         # Confusion matrix
         confusion_matrix(y_test, y_test_pred)
 
-        # # K-fold cross validation
-        # for k in range(2, 10):
-        #     scores = cross_val_score(model, X, y, cv=k, n_jobs=-1)
-        #     print(f"K-fold Score for k = {k}: {scores.mean():.2f}")
-        # print()
+        # K-fold cross validation
+        for k in range(2, 10):
+            scores = cross_val_score(model, X, y, cv=k, n_jobs=-1)
+            print(f"K-fold Score for k = {k}: {scores.mean():.2f}")
+        print()
 
         if model_name != "Perceptron": # Perceptron no té predict_proba()
             probs = pipe.predict_proba(X_test)
@@ -138,37 +123,36 @@ def apartat_a():
             plt.legend()
             plt.savefig("images/A/roc-curves/" + model_name)
 
-    # models = [
-    #     LogisticRegression(max_iter=3000),
-    #     svm.SVC(probability=True),
-    #     KNeighborsClassifier(),
-    #     RandomForestClassifier(min_samples_split=20),
-    #     Perceptron(),
-    #     DecisionTreeClassifier()
-    # ]
 
-    # model_names = ['LogisticRegression', 'SVC_rbf', 'SVC_linear', 'KNN', 'RandomForestClassifier', 'Perceptron', 'DecisionTreeClassifier']
+    models = [
+        LogisticRegression(max_iter=3000),
+        KNeighborsClassifier(),
+        RandomForestClassifier(min_samples_split=20),
+        Perceptron(),
+        DecisionTreeClassifier()
+    ]
 
-    # param_grid = {
-    #     'LogisticRegression': {'penalty': ['l1', 'l2'], 'C': [0.01, 0.1, 1, 10, 100, 1000]},
-    #     'SVC rbf': {'C': [0.1, 1, 10, 100], 'gamma': [0.01, 0.1, 1, 10]},
-    #     'SVC linear': {'C': [0.1, 1, 10, 100], 'gamma': [0.01, 0.1, 1, 10]},
-    #     'KNN': {
-    #         'n_neighbors' : [5,7,9,11,13,15],
-    #         'weights' : ['uniform','distance'],
-    #         'metric' : ['minkowski','euclidean','manhattan']
-    #     },
-    #     'RandomForestClassifier': {
-    #         'n_estimators': [10, 50, 100, 200, 500],
-    #         'max_features': ['auto', 'sqrt', 'log2'],
-    #         'max_depth': [10, 50, 100, 200]
-    #     },
-    #     'Perceptron': {'penalty': ['l1', 'l2'], 'alpha': [0.0001, 0.001, 0.01, 0.1, 1, 10]},
-    #     'DecisionTreeClassifier': {'max_depth': [2, 3, 5, 10, 20, 50]}
-    # }
-    # 
-    # for model_name, model in zip(model_names, models):
-    #     grid = GridSearchCV(model, param_grid[model_name], scoring='accuracy', cv=5, n_jobs=-1, verbose=3)
-    #     grid.fit(X_train, y_train)
-    #     print("Best params: ",grid.best_params_)
-    #     print("Best score: ", grid.best_score_)
+    model_names = ['LogisticRegression', 'KNN', 'RandomForestClassifier', 'Perceptron', 'DecisionTreeClassifier']
+
+    param_grid = {
+        'LogisticRegression': {'penalty': ['l1', 'l2'], 'C': [0.01, 0.1, 1, 10, 100, 1000]},
+        'SVC': {'C': [0.1, 1, 10, 100], 'gamma': [0.01, 0.1, 1, 10], 'kernel': ['rbf']},
+        'KNN': {
+            'n_neighbors' : [5,7,9,11,13,15],
+            'weights' : ['uniform','distance'],
+            'metric' : ['minkowski','euclidean','manhattan']
+        },
+        'RandomForestClassifier': {
+            'n_estimators': [10, 50, 100, 200, 500],
+            'max_features': ['auto', 'sqrt', 'log2'],
+            'max_depth': [10, 50, 100, 200]
+        },
+        'Perceptron': {'penalty': ['l1', 'l2'], 'alpha': [0.0001, 0.001, 0.01, 0.1, 1, 10, 50]},
+        'DecisionTreeClassifier': {'max_depth': [2, 3, 5, 10, 20, 50]}
+    }
+    
+    for model_name, model in zip(model_names, models):
+        grid = GridSearchCV(model, param_grid[model_name], scoring='accuracy', cv=5, n_jobs=-1, verbose=3)
+        grid.fit(X_train, y_train)
+        print("Best params: ",grid.best_params_)
+        print("Best score: ", grid.best_score_)
